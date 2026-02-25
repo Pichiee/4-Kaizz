@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My One and Only</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fce4ec;
+            --glass: rgba(255, 255, 255, 0.4);
+            --accent: #ff4d6d;
+            --text: #590d22;
+            --nav-bg: rgba(255,255,255,0.8);
+            --heart-color: #ff4d6d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+
+
+        /* --- Full Page Sections --- */
+        .container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+
+        section {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            scroll-snap-align: start;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* --- Animations --- */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        @keyframes fadeQuote {
+            0%,20% { opacity: 1; }
+            25%,45% { opacity: 0; }
+            50%,70% { opacity: 1; }
+            75%,95% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* --- Section-specific styles --- */
+        #hero {
+            background: radial-gradient(circle, #fff0f3 0%, #ffb3c1 100%);
+            padding-top: 60px;
+        }
+
+        .big-heart {
+            font-size: 120px;
+            filter: drop-shadow(0 0 20px #ff4d6d);
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        h1 { font-family: 'Pacifico', cursive; font-size: 3.5rem; color: var(--accent); margin: 20px 0; }
+
+        .envelope-wrapper {
+            /* make container transparent so gif background shows only the animation */
+            background: transparent;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            max-width: 600px;
+            cursor: pointer;
+            transition: 0.5s;
+            position: relative;
+        }
+        /* size the GIF envelope nicely */
+        .envelope-wrapper img.envelope-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        /* remove extra icon; gif already conveys envelope */
+        .envelope-wrapper::before { display: none; }
+        .envelope-wrapper.open::before { display: none; }
+
+        .envelope-wrapper:hover { transform: scale(1.05); }
+
+        .letter-text { font-family: 'Dancing Script', cursive; font-size: 1.6rem; line-height: 1.6; }
+
+        .polaroid-stack {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 15px 15px 40px 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transform: rotate(-2deg);
+            transition: 0.3s;
+        }
+
+        .polaroid img { width: 180px; height: 180px; object-fit: contain; border: 1px solid #eee; background: #fff; }
+        /* optionally add full display for second picture */
+        .polaroid img.pic2 { object-fit: contain; width: 100%; height: auto; }
+
+        .polaroid:nth-child(even) { transform: rotate(3deg); }
+        .polaroid:hover { transform: scale(1.1) rotate(0deg); z-index: 10; }
+
+        /* timeline */
+        #timeline { background: #ffe8f0; }
+        .timeline { position: relative; max-width: 800px; margin: auto; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            padding: 20px 40px;
+            position: relative;
+            width: 50%;
+        }
+        .timeline-item:nth-child(odd) { left: 0; }
+        .timeline-item:nth-child(even) { left: 50%; text-align: right; }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 3px solid white;
+        }
+        .timeline-item:nth-child(odd)::before { right: -8px; }
+        .timeline-item:nth-child(even)::before { left: -8px; }
+
+        /* reasons/stickers */
+        .sticker-wall {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            max-width: 900px;
+        }
+
+        .sticker {
+            background: #fff;
+            padding: 14px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2rem; /* larger text for readability */
+            color: var(--text);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+            box-shadow: 5px 5px 0px var(--accent);
+            border: 2px solid var(--text);
+            transform: rotate(calc(-1deg + (2deg * var(--i)))); /* less skew for clarity */
+        }
+
+        /* quotes carousel */
+        #quotes { background: #fff; }
+        .quote-box {
+            font-size: 1.5rem;
+            width: 80%;
+            margin: 20px auto;
+            opacity: 0;
+            animation: fadeQuote 12s infinite;
+        }
+        .quote-box:nth-child(1) { animation-delay: 0s; }
+        .quote-box:nth-child(2) { animation-delay: 4s; }
+        .quote-box:nth-child(3) { animation-delay: 8s; }
+        .quote-box:nth-child(4) { animation-delay: 30s; }
+        .quote-box:nth-child(5) { animation-delay: 40s; }
+        .quote-box:nth-child(6) { animation-delay: 50s; }
+        .quote-box:nth-child(7) { animation-delay: 60s; }
+        .quote-box:nth-child(8) { animation-delay: 70s; }
+        .quote-box:nth-child(9) { animation-delay: 80s; }
+        .quote-box:nth-child(10) { animation-delay: 90s; }
+        .quote-box:nth-child(2) { animation-delay: 5s; }
+        .quote-box:nth-child(3) { animation-delay: 10s; }
+        .quote-box:nth-child(4) { animation-delay: 15s; }
+        .quote-box:nth-child(5) { animation-delay: 20s; }   
+        .quote-box:nth-child(6) { animation-delay: 25s; }
+        .quote-box:nth-child(7) { animation-delay: 30s; }
+        .quote-box:nth-child(8) { animation-delay: 35s; }
+
+        /* media */
+        .video-player { margin: 20px auto; max-width: 600px; }
+        /* smaller framed video style */
+        .framed-video {
+            max-width: 300px;
+            border: 5px solid var(--accent);
+            border-radius: 15px;
+        }
+        /* smaller framed video style */
+        .framed-video {
+            max-width: 300px;
+            border: 5px solid var(--accent);
+            border-radius: 15px;
+        }
+
+        /* extras section styles */
+        #extras { background: #ffe0f0; }
+        #surprise-heart { font-size: 80px; cursor: pointer; animation: float 3s ease-in-out infinite; }
+        #surprise-message { margin-top: 20px; max-width: 600px; display: none; }
+
+        /* floating elements */
+        .falling-element {
+            position: fixed;
+            top: -10%;
+            z-index: -1;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+        /* approval heart hover effect */
+        #approval-heart:hover { transform: scale(1.1); }
+        #approval-message { color: #fff; }
+
+    </style>
+</head>
+<body>
+
+
+    <div class="container">
+        <section id="hero">
+            <div class="big-heart">
+                <img src="https://i.pinimg.com/originals/3f/06/c2/3f06c234d78c5cd7e879506847822149.gif" alt="Heart GIF" style="width:120px; height:120px;">
+            </div>
+            <h1>Our Love Story</h1>
+            <p>A little corner of the internet just for you.</p>
+            <p style="margin-top: 50px; opacity: 0.6;">Scroll Down ↓</p>
+        </section>
+
+
+        <section id="gallery">
+            <h2 style="margin-bottom: 40px; font-family: 'Pacifico';">Favorite Moments</h2>
+            <div class="polaroid-stack">
+                <div class="polaroid"><img src="pic1.jpg" alt="Our First Date"><p>Our First Date</p></div>
+                <div class="polaroid"><img src="pic2.jpg"><p>Late Night Talks</p></div>
+                <div class="polaroid"><img src="my pic 1.jpg"><p>That Our Second Date</p></div>
+                <div class="polaroid"><img src="pic3.jpg"><p>With Princess</p></div>
+            </div>
+        </section>
+
+        <section id="timeline">
+            <h2 style="margin-bottom: 40px; font-family: 'Pacifico';">Our Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>First Meeting</h3>
+                    <p>The first sign of seeing your at workplace, That was the start of everything.</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>First Date</h3>
+                    <p>The night we drive home and talked about everything.</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Late Night Talk</h3>
+                    <p>Our speech make my heart feel so warm and loved.</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>Forever</h3>
+                    <p>Every day with you feels like the best day.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="reasons">
+            <h2 style="margin-bottom: 30px; font-family: 'Pacifico';">Why I Love You</h2>
+            <div class="sticker-wall">
+                <div class="sticker" style="--i:1">The way you laugh</div>
+                <div class="sticker" style="--i:2">Your morning voice</div>
+                <div class="sticker" style="--i:3">Your kindness</div>
+                <div class="sticker" style="--i:4">You make me better</div>
+                <div class="sticker" style="--i:5">The way you look at me</div>
+                <div class="sticker" style="--i:6">Your silly jokes</div>
+                <div class="sticker" style="--i:7">Our late night talks</div>
+                <div class="sticker" style="--i:8">Your warm cheek</div>
+                <div class="sticker" style="--i:9">How you act cutie</div>
+                <div class="sticker" style="--i:10">The little notes you leave me</div>
+                <div class="sticker" style="--i:11">Just being yourself</div>
+            </div>
+        </section>
+
+        <section id="quotes">
+            <h2 style="margin-bottom: 30px; font-family: 'Pacifico';">Sweet Sayings</h2>
+            <div class="quote-box">"You're my sunshine on a cloudy day."</div>
+            <div class="quote-box">"Every moment with you is magic."</div>
+            <div class="quote-box">"I fall more in love with you each day."</div>
+            <div class="quote-box">"Being with you makes my heart flutter (like the petals!)."</div>
+            <div class="quote-box">"Can you be my girlfriend?"</div>
+            <div class="quote-box">"Your smile lights up my darkest days."</div>
+            <div class="quote-box">"Listening to you feels like a warm hug."</div>
+            <div class="quote-box">"Every little quirk of yours is adorable."</div>
+            <div class="quote-box">"You inspire me to be the best version of me."</div>
+            <div class="quote-box">"I love you more than I can ever say."</div>
+        </section>
+
+        <section id="media">
+            <h2 style="margin-bottom: 30px; font-family: 'Pacifico';">
+                Moments in Motion
+            </h2>
+
+
+            <!-- framed smaller local video -->
+            <div class="video-player">
+                <video controls class="framed-video">
+                  <source src="proposal.mp4" type="video/mp4">
+                  Your browser doesn’t support HTML5 video.
+                </video>
+            </div>
+
+            <p style="margin-top:20px; font-size:1.2rem; max-width:600px;">
+                The song playing in the background is about us; every lyric feels like it was
+                written for our story, and it makes me feel like destiny brought us together.
+            </p>
+        </section>
+
+        <section id="extras">
+            <h2 style="margin-bottom: 30px; font-family: 'Pacifico';">Little Surprises</h2>
+            <p>Click the heart below for a special message just for you!</p>
+            <div id="surprise-heart" class="big-heart">💘</div>
+            <div id="surprise-message" class="letter-text">
+                <p>You make my heart flutter more than any page ever could. 💕</p>
+                <p>Every click is a reminder that I adore you.</p>
+            </div>
+        </section>
+
+        <!-- moved letter section here -->
+        <section id="message">
+            <!-- closed envelope; clicking replaces innerHTML with the actual letter -->
+            <div class="envelope-wrapper" id="envelope">
+                <!-- animated envelope gif from Pinterest (use a downloaded file or real URL) -->
+                <img src="https://i.pinimg.com/originals/c9/1b/ae/c91baedce19a1294db806c6769232720.gif"
+                     alt="Click to open"
+                     class="envelope-img">
+            </div>
+            <p id="click-instruction" style="margin-top:15px; font-size:1.2rem;">Please click this..</p>
+        </section>
+
+        <section id="end" style="background-color: var(--accent); color: white;">
+            <h2 style="font-size: 3rem;">Will you be my girlfriend?</h2>
+            <p style="font-size: 1.5rem; margin-top: 20px;">Click the heart below if your answer is yes 💖</p>
+            <div id="approval-heart" class="big-heart" style="font-size:100px; margin-top:30px; cursor:pointer;">❤️</div>
+            <p id="approval-message" style="font-size:1.4rem; margin-top:20px; display:none;">
+                I feel like it's a dream, but everything I could do I will treat you well as I can.
+                love you so much Kaizz 💕<br>
+                
+            </p>
+        </section>
+    </div>
+
+<script>
+    // floating hearts/petals
+    function createPetal() {
+        const symbols = ['🌸', '❤️', '✨', '💖'];
+        const el = document.createElement('div');
+        el.className = 'falling-element';
+        el.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        el.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => { el.remove(); }, 5000);
+    }
+    setInterval(createPetal, 300);
+
+
+
+
+    // envelope open logic
+    document.getElementById('envelope').addEventListener('click', function handleOpen() {
+        // hide instruction
+        const instr = document.getElementById('click-instruction');
+        if (instr) instr.style.display = 'none';
+        // reveal the letter text and question
+        this.classList.add('open');
+        this.innerHTML = `
+            <h2 style="margin-bottom: 20px;">To My Dearest,</h2>
+            <p class="letter-text">
+                "I was thinking about us today and realized that life feels like a movie when you’re around,
+                but the kind I never want to end. 
+                You’re my favorite person all wrapped into one. 
+                I don't just want to date you; I want to build something real with you. I love you, and I want you right here with me for the whole ride.
+            </p>
+            <p style="margin-top: 20px; font-weight: bold;">Will you be my Girlfriend? ❤️</p>
+        `;
+        // remove handler so repeated clicks do nothing
+        this.removeEventListener('click', handleOpen);
+        this.style.cursor = 'default';
+    });
+
+    // extras section interaction
+    const surpriseHeart = document.getElementById('surprise-heart');
+    const surpriseMsg = document.getElementById('surprise-message');
+    if (surpriseHeart && surpriseMsg) {
+        surpriseHeart.addEventListener('click', () => {
+            surpriseMsg.style.display = 'block';
+            for (let i = 0; i < 30; i++) createPetal();
+        });
+    }
+
+    // clicking anywhere blooms more petals
+    document.body.addEventListener('click', () => {
+        for (let i = 0; i < 5; i++) createPetal();
+    });
+
+    // approval heart click celebration
+    const approvalHeart = document.getElementById('approval-heart');
+    const approvalMsg = document.getElementById('approval-message');
+    if (approvalHeart && approvalMsg) {
+        approvalHeart.addEventListener('click', () => {
+            approvalMsg.style.display = 'block';
+            for (let i = 0; i < 50; i++) createPetal();
+        });
+    }
+</script>
+</body>
+</html>
