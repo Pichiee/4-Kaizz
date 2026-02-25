@@ -242,6 +242,33 @@
         #approval-heart:hover { transform: scale(1.1); }
         #approval-message { color: #fff; }
 
+        /* mobile adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 2rem; }
+            p { font-size: 1rem; }
+            section { padding: 15px; }
+            .big-heart { font-size: 90px; }
+            .envelope-wrapper { padding: 20px; max-width: 90%; }
+            .letter-text { font-size: 1.4rem; }
+            .polaroid-stack { gap: 10px; }
+            .polaroid img { width: 120px; height: 120px; }
+            .timeline { max-width: 100%; }
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                padding: 15px 10px;
+                text-align: left !important;
+            }
+            .timeline-item::before { left: 10px !important; right: auto !important; }
+            .sticker-wall { gap: 10px; }
+            .sticker { font-size: 1rem; padding: 10px 20px; }
+            .quote-box { font-size: 1.2rem; width: 90%; }
+            .video-player { max-width: 100%; }
+            .framed-video { max-width: 100%; }
+            #surprise-heart { font-size: 60px; }
+            #approval-heart { font-size: 80px; }
+        }
     </style>
 </head>
 <body>
